@@ -23,3 +23,5 @@
     - az storage account keys list -g $resourceGroup -n jenkinsterraformsa - -query [0].value -o tsv
         - Create a text credential named: "access-key"
 
+## Create pipeline as in the example [Jenkinsfile-terraform](./Jenkinsfile-terraform)
+
