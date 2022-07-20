@@ -1,26 +1,25 @@
 # Jenkins + terraform
 
 ## Install the following plugins:
-- [AnsiColor](https://plugins.jenkins.io/ansicolor/)
 - [Azure Credentials](https://plugins.jenkins.io/azure-credentials/)
-- [Azure KeyVault](https://plugins.jenkins.io/azure-keyvault/)
-	- Once all plugins are installed, restart Jenkins by navigating to the url: <aci_FQDN>:8080/restart
 
-## Run azure_admin.sh
-- The azure_admin.sh script located in the scripts directory is used to create a Service Principal, Azure Storage Account and KeyVault. The Service Principal will be granted read access to the KeyVault secrets and will be used by Jenkins. The script will also set KeyVault secrets that will be used by Jenkins & Terraform.
-- chmod +x ./scripts/azure_admin.sh -h && ./scripts/azure_admin.sh -h
+## Create a Jenkins API Token to connect via jenkins-cli. On the Jenkins Home screen:
+- Manage Jenkins -> Manage Users
+- Select the user you created -> Configure
+- API Token -> Add new Token -> Generate -> copy
 
-## Run jenkins_admin.sh
-- used by a Jenkins Admin to connect to the KeyVault created in the azure_admin.sh script, fetch Azure Service Principal information and store this information in Jenkins using jenkins-cli. The Azure Service Principal credentials can then be used by Jenkins to connect to Azure.
-- chmod +x ./scripts/jenkins_admin.sh -h &&
-    ./scripts/jenkins_admin.sh -h
-    - Once you have run the script:
-    	- Log into Jenkins
-    	- Manage Jenkins -> Manage Credentials and you should see the credentials the script loaded into Jenkins
+## Get the sucription id
+- resourceGroup="terraform_group"
+- subId=$(az account show --output tsv --query id)
 
-## Create and Run Jenkins Job
-- See Jenkinsfile-terraform
+## Create a principal
+- az group create --name $resourceGroup --location eastus
+    - Create an azure credential with the returned data, named: "azure-credentials"
 
-## Run cleanup_azure.sh
-- The cleanup_azure.sh script located in the scripts directory is used to delete Azure resources created by the scripts during the tutorial.
-- chmod +x ./scripts/cleanup_azure.sh -h && ./scripts/cleanup_azure.sh -h
+## Create storage account and a storage container
+- az storage account create  --name jenkinsterraformsa  --resource-group $resourceGroup --location eastus
+- az storage container create --account-name jenkinsterraformsa --name jenkinsterraformac
+### Get the primary key
+    - az storage account keys list -g $resourceGroup -n jenkinsterraformsa - -query [0].value -o tsv
+        - Create a text credential named: "access-key"
+
