@@ -16,7 +16,7 @@
 - az storage account create  --name jenkinsterraformsa  --resource-group $resourceGroup --location eastus
 - az storage container create --account-name jenkinsterraformsa --name jenkinsterraformac
 ### Get the primary key
-    - az storage account keys list -g $resourceGroup -n jenkinsterraformsa - -query [0].value -o tsv
+    - az storage account keys list -g $resourceGroup -n jenkinsterraformsa --query [0].value -o tsv
         - Create a text credential named: "access-key"
 
 ## Create pipeline as in the example 
