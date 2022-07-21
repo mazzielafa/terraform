@@ -7,11 +7,12 @@
 - subId=$(az account show --output tsv --query id)
 
 ## Create a principal
-- resourceGroup="terraform_group"
-- az group create --name $resourceGroup --location eastus
+- az ad sp create-for-rbac --skip-assignment
     - Create an azure credential with the returned data, named: "azure-credentials"
 
 ## Create storage account and a storage container
+- resourceGroup="terraform_group"
+- az group create --name $resourceGroup --location eastus
 - az storage account create  --name jenkinsterraformsa  --resource-group $resourceGroup --location eastus
 - az storage container create --account-name jenkinsterraformsa --name jenkinsterraformac
 ### Get the primary key
