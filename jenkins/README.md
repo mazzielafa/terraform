@@ -7,7 +7,7 @@
 - subId=$(az account show --output tsv --query id)
 
 ## Create a principal
-- az ad sp create-for-rbac --skip-assignment
+-  az ad sp create-for-rbac --name terraform-jenkins --role Contributor --scopes /subscriptions/${subId}
     - Create an azure credential with the returned data, named: "azure-credentials"
 
 ## Create storage account and a storage container
@@ -15,6 +15,7 @@
 - az group create --name $resourceGroup --location eastus
 - az storage account create  --name jenkinsterraformsa  --resource-group $resourceGroup --location eastus
 - az storage container create --account-name jenkinsterraformsa --name jenkinsterraformac
+
 ### Get the primary key
     - az storage account keys list -g $resourceGroup -n jenkinsterraformsa --query [0].value -o tsv
         - Create a text credential named: "access-key"
