@@ -5,6 +5,7 @@
 
 ## Get the sucription id
 - subId=$(az account show --output tsv --query id)
+- echo $subId
 
 ## Create a principal
 -  az ad sp create-for-rbac --name terraform-jenkins --role Contributor --scopes /subscriptions/${subId}

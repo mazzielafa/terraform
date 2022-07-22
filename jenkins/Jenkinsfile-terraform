@@ -13,11 +13,9 @@ pipeline {
         stage('AZ') {
             steps {
                 echo 'Showing az info'
-                ansiColor('xterm') {
-                    withCredentials([azureServicePrincipal('azure-credentials')]) {
-                        sh 'az login --service-principal -u $MY_CRED_CLIENT_ID -p $MY_CRED_CLIENT_SECRET -t $MY_CRED_TENANT_ID'
-                        sh 'az account list'
-                    }
+                withCredentials([azureServicePrincipal('azure-credentials')]) {
+                    sh 'az login --service-principal -u $MY_CRED_CLIENT_ID -p $MY_CRED_CLIENT_SECRET -t $MY_CRED_TENANT_ID'
+                    sh 'az account list'
                 }
             }
         }
