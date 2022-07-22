@@ -3,25 +3,24 @@
 ## Install the following plugins:
 - [Azure Credentials](https://plugins.jenkins.io/azure-credentials/)
 
-## Create a Jenkins API Token to connect via jenkins-cli. On the Jenkins Home screen:
-- Manage Jenkins -> Manage Users
-- Select the user you created -> Configure
-- API Token -> Add new Token -> Generate -> copy
-
 ## Get the sucription id
-- resourceGroup="terraform_group"
 - subId=$(az account show --output tsv --query id)
+- echo $subId
 
 ## Create a principal
-- az group create --name $resourceGroup --location eastus
+-  az ad sp create-for-rbac --name terraform-jenkins --role Contributor --scopes /subscriptions/${subId}
     - Create an azure credential with the returned data, named: "azure-credentials"
 
 ## Create storage account and a storage container
+- resourceGroup="terraform_group"
+- az group create --name $resourceGroup --location eastus
 - az storage account create  --name jenkinsterraformsa  --resource-group $resourceGroup --location eastus
 - az storage container create --account-name jenkinsterraformsa --name jenkinsterraformac
+
 ### Get the primary key
-    - az storage account keys list -g $resourceGroup -n jenkinsterraformsa - -query [0].value -o tsv
+    - az storage account keys list -g $resourceGroup -n jenkinsterraformsa --query [0].value -o tsv
         - Create a text credential named: "access-key"
 
-## Create pipeline as in the example [Jenkinsfile-terraform](./Jenkinsfile-terraform)
+## Create pipeline as in the example 
+- [Jenkinsfile-terraform](./Jenkinsfile-terraform)
 
